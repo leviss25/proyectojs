@@ -57,32 +57,102 @@ arrayProducts.forEach((prod) => {
       </div>
     `;
 });
-//to update the cart with the localStorage information, we create empty arrya if there isn't information
-
-function getItemStorage() {
+function getItemStorage() {//to update the cart with the localStorage information, we create empty arrya if there isn't information
   return JSON.parse(localStorage.getItem("cart")) || [];
 }
 let arrayCart = getItemStorage();
-
+function countTotalProducts(){
+  let total=0;
+  arrayCart.forEach(p=>{
+    total = total + p.count;
+  })
+  return total;
+}
+let countitemscart = document.querySelector("#countitemscart");
+console.log(countitemscart);
+console.log(countitemscart.textContent);
+console.log(countTotalProducts());
+countitemscart.textContent = countTotalProducts();
 function saveItemStorage(array) {
   localStorage.setItem("cart", JSON.stringify(array));
 }
-
 function isInCart(id) {
   arrayCart = getItemStorage();
   return arrayCart.some(productito => productito.id == id);
 }
-
 function updatecount(id) {
   arrayCart = getItemStorage();
   const indice = arrayCart.findIndex(productito => productito.id == id);
   arrayCart[indice].count++;
   saveItemStorage(arrayCart);
 }
-function showProductAdded() {
+function countProduct(id, array) //Count a product type from an array of products
+{
+  return array.find(p => p.id == id).count;
+}
+function totalCost(){
+  let total=0;
+  arrayCart.forEach(e => {
+    total = total + (e.count * e.price);
+  })
+  return total;
+}
+
+function showProductAdded(id) {
+  const prod = arrayProducts[arrayProducts.findIndex(p=>p.id == id)];
+  arrayCart=getItemStorage();
+  const n = countTotalProducts();
+  totalSum = totalCost();
+  delieryCost = totalSum >= 300 ? 0.00 : 4.99;
+  textDelieryCost = delieryCost == 0 ? "FREE" : "$ 4.99";
+  total = totalSum + delieryCost;
   Swal.fire({
     title: '<strong>SUCCESSFULLY ADDED TO CART!</strong>',
-    html:`<div class="modal-content2"> <div class="product-preview"> <div class="product-description"> <img src="./assets/images/newsletter.png" alt="product added" width="100" height="100"/> </div><div class="product-description"> <h3 class="newsletter-title">Mens Winter Leathers Jackets</h3> <p class="newsletter-desc">$ 200</p><p class="newsletter-desc">Jacket</p><p class="newsletter-desc">Quantity: 1</p></div></div><div class="product-preview"> <form action="#"> <div class="newsletter-header"> <h3 class="newsletter-title">YOU CART</h3> <div class="content-item"> <p class="newsletter-desc">14 items</p></div><div class="content-item"> <p class="newsletter-desc">Total product cost:</p><p class="newsletter-desc">$ 3747.20</p></div><div class="content-item"> <p class="newsletter-desc">Delivery costs:</p><p class="newsletter-desc">FREE</p></div><div class="content-item"> <p class="newsletter-desc">Total :</p><p class="newsletter-desc">$ 3747.20</p></div><p class="newsletter-desc">(taxes included)</p></p></div><button type="submit" class="btn-newsletter">View Cart</button> </form> </div></div>`,
+    html:`
+    <div class="modal-content2">
+    <div class="product-preview">
+      <div class="product-description">
+        <img
+        src="./assets/images/products/${prod.type}.jpg"
+        alt="${prod.description}"
+        width="100"
+        height="100"
+        />
+      </div>
+      <div class="product-description">
+        <h3 class="newsletter-title">${prod.description}</h3>
+        <p class="newsletter-desc">${prod.currency} ${prod.price}</p>
+        <p class="newsletter-desc">${prod.category}</p>
+        <p class="newsletter-desc">Quantity: 1</p>
+      </div>
+    </div>
+    <div class="product-preview">
+      <form action="#">
+        <div class="newsletter-header">
+          <h3 class="newsletter-title">YOU CART</h3>
+          <div class="content-item">
+            <p class="newsletter-desc">${n} items</p>
+          </div>
+          <div class="content-item">
+            <p class="newsletter-desc">Total product cost:</p>
+            <p class="newsletter-desc">${prod.currency} ${totalSum}</p>
+          </div>
+          <div class="content-item">
+            <p class="newsletter-desc">Delivery costs:</p>
+            <p class="newsletter-desc">${textDelieryCost}</p>
+          </div>
+          <div class="content-item">
+            <p class="newsletter-desc">Total :</p>
+            <p class="newsletter-desc">${prod.currency} ${total}</p>
+          </div>
+          <p class="newsletter-desc">(taxes included)</p>
+          </p>
+        </div>
+        <button type="submit" class="btn-newsletter">View Cart</button>
+      </form>
+    </div>
+  </div> 
+    `,
     showCloseButton: true,
     showConfirmButton: false,
     // cancelButtonAriaLabel: 'Thumbs down',
@@ -98,6 +168,6 @@ arrayProducts.forEach((productArray) => {
       arrayCart.push({ ...arrayProducts.find(productito => productito.id == productArray.id), count: 1 });
       saveItemStorage(arrayCart);
     }
-    showProductAdded();
+    showProductAdded(productArray.id);
   });
 });
