@@ -11,14 +11,14 @@ arrayProducts.forEach((prod) => {
   //....
   let typediscount = "";
   switch (prod.discount) {
-      case "sale":{
-        typediscount = "angle black";
-        break;
-      }
-      case "new":{
-        typediscount = "angle pink";
-        break;
-      }
+    case "sale": {
+      typediscount = "angle black";
+      break;
+    }
+    case "new": {
+      typediscount = "angle pink";
+      break;
+    }
   }
   gridProduct.innerHTML += `
       <div class="showcase" id="product${prod.id}">
@@ -59,38 +59,45 @@ arrayProducts.forEach((prod) => {
 });
 //to update the cart with the localStorage information, we create empty arrya if there isn't information
 
-function getItemStorage(){
-    return JSON.parse(localStorage.getItem("cart")) || [];
+function getItemStorage() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
 }
 let arrayCart = getItemStorage();
 
-function saveItemStorage(array){
-    localStorage.setItem("cart", JSON.stringify(array));
+function saveItemStorage(array) {
+  localStorage.setItem("cart", JSON.stringify(array));
 }
 
-function isInCart(id){
-    return arrayCart.some(productito => productito.id == id);
+function isInCart(id) {
+  arrayCart = getItemStorage();
+  return arrayCart.some(productito => productito.id == id);
 }
 
-function updatecount(id){
-    console.log(id);
-    console.log(arrayCart);
-    const indice = arrayCart.findIndex(productito => productito.id == id);
-    console.log(indice);
-    arrayCart[indice].count++;
-    console.log(arrayCart);
-    saveItemStorage(arrayCart);
+function updatecount(id) {
+  arrayCart = getItemStorage();
+  const indice = arrayCart.findIndex(productito => productito.id == id);
+  arrayCart[indice].count++;
+  saveItemStorage(arrayCart);
+}
+function showProductAdded() {
+  Swal.fire({
+    title: '<strong>SUCCESSFULLY ADDED TO CART!</strong>',
+    html:`<div class="modal-content2"> <div class="product-preview"> <div class="product-description"> <img src="./assets/images/newsletter.png" alt="product added" width="100" height="100"/> </div><div class="product-description"> <h3 class="newsletter-title">Mens Winter Leathers Jackets</h3> <p class="newsletter-desc">$ 200</p><p class="newsletter-desc">Jacket</p><p class="newsletter-desc">Quantity: 1</p></div></div><div class="product-preview"> <form action="#"> <div class="newsletter-header"> <h3 class="newsletter-title">YOU CART</h3> <div class="content-item"> <p class="newsletter-desc">14 items</p></div><div class="content-item"> <p class="newsletter-desc">Total product cost:</p><p class="newsletter-desc">$ 3747.20</p></div><div class="content-item"> <p class="newsletter-desc">Delivery costs:</p><p class="newsletter-desc">FREE</p></div><div class="content-item"> <p class="newsletter-desc">Total :</p><p class="newsletter-desc">$ 3747.20</p></div><p class="newsletter-desc">(taxes included)</p></p></div><button type="submit" class="btn-newsletter">View Cart</button> </form> </div></div>`,
+    showCloseButton: true,
+    showConfirmButton: false,
+    // cancelButtonAriaLabel: 'Thumbs down',
+    width: '50%'
+  })
 }
 //to add click event in the buttons to add products to the cart and to the localStorage
 arrayProducts.forEach((productArray) => {
-    document.querySelector(`#btnAdd${productArray.id}`).addEventListener("click", () => {
-        if (isInCart(productArray.id)) {
-            updatecount(productArray.id);
-        } else {
-            arrayCart.push({
-                ...arrayProducts.find(productito => productito.id == productArray.id), count: 1}
-              );
-              saveItemStorage(arrayCart);
-        }
-    });
+  document.querySelector(`#btnAdd${productArray.id}`).addEventListener("click", () => {
+    if (isInCart(productArray.id)) {
+      updatecount(productArray.id);
+    } else {
+      arrayCart.push({ ...arrayProducts.find(productito => productito.id == productArray.id), count: 1 });
+      saveItemStorage(arrayCart);
+    }
+    showProductAdded();
+  });
 });
