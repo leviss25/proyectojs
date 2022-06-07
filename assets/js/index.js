@@ -71,7 +71,7 @@ function showProductAdded(id) {
       <div class="product-preview">
         <form action="#">
           <div class="newsletter-header">
-            <h3 class="newsletter-title">YOU CART</h3>
+            <h3 class="newsletter-title">YOUR CART</h3>
             <div class="content-item">
               <p class="newsletter-desc">${n} items</p>
             </div>
@@ -90,7 +90,9 @@ function showProductAdded(id) {
             <p class="newsletter-desc">(taxes included)</p>
             </p>
           </div>
-          <button type="submit" class="btn-newsletter">View Cart</button>
+          <a href="./assets/pages/cart.html" class="btn-newsletter">
+          View cart
+          </a>
         </form>
       </div>
     </div> 
@@ -238,7 +240,3 @@ fetch('products.json')
 // });
 let arrayCart = getItemStorage(); //update arrayCart with localstorage
 updateCountItemsCart(); // update text of cartnumber
-
-
-
-
