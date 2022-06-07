@@ -1,6 +1,7 @@
 let arrayProducts =[];
 let countitemscart = document.querySelector("#countitemscart");
 let gridProduct = document.querySelector("#gridproducts");
+let freeShepping = 100;
 
 function getItemStorage() {//update the cart with the localStorage information, we create empty arrya if there isn't information
   return JSON.parse(localStorage.getItem("cart")) || [];
@@ -45,7 +46,7 @@ function showProductAdded(id) {
   const n = countTotalProducts();
   totalSum = totalCost();
   //delivery is free when it is greater than $300  :)
-  delieryCost = totalSum >= 100 ? 0.00 : 4.99;
+  delieryCost = totalSum >= freeShepping ? 0.00 : 4.99;
   textDelieryCost = delieryCost == 0 ? "FREE" : "$ 4.99";
   total = totalSum + delieryCost;
   Swal.fire({
