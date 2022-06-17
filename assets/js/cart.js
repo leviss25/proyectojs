@@ -1,77 +1,71 @@
 let arrayProducts = [];
+let nro = arrayProducts.length;
 let countitemscart = document.querySelector("#countitemscart");
 let detailcart = document.querySelector("#detailcart");
 let orderSumary = document.querySelector("#orderSumary");
 let itemNumbers = document.querySelector("itemNumbers");
 let freeShepping = 100;
+let flag = 0;
 
-function getItemStorage() {
-  //update the cart with the localStorage information, we create empty arrya if there isn't information
+function getItemStorage() {//update the cart with the localStorage information, we create empty arrya if there isn't information
   return JSON.parse(localStorage.getItem("cart")) || [];
 }
-function countTotalProducts() {
-  //count all products of arrayCart (localStorage)
+function countTotalProducts() {//count all products of arrayCart (localStorage)
   let total = 0;
   arrayCart.forEach((p) => {
     total = total + p.count;
   });
   return total;
 }
-function updateCountItemsCart() {
-  //update text of cartnumber
+function updateCountItemsCart() {//update text of cartnumber
   countitemscart.textContent = countTotalProducts();
 }
-function saveItemStorage(array) {
+function saveItemStorage(array) { //save arrayItems in localStorage
   localStorage.setItem("cart", JSON.stringify(array));
 }
-function isInCart(id) {
+function isInCart(id) { 
   arrayCart = getItemStorage();
   return arrayCart.some((productito) => productito.id == id);
 }
-function updatecount(id) {
-  //function to update number of items in arrayCart
+function updatecount(id) { //function to update number of elements by item in arrayCart  
   arrayCart = getItemStorage();
   const indice = arrayCart.findIndex((productito) => productito.id == id);
   arrayCart[indice].count++;
   saveItemStorage(arrayCart); ////update localstorage
 }
-function priceProduct(id, array) {
-  //return price of product
+function priceProduct(id, array) { //return price of product
   return array[array.findIndex((p) => p.id == id)].price;
 }
-function startingPriceProduct(id, array) {
-  //return startingPrice of product
+function startingPriceProduct(id, array) { //return startingPrice of product
   return array[array.findIndex((p) => p.id == id)].startingPrice;
 }
-function totalCost() {
-  //find total cost
+function totalCost() { //find total cost
   let total = 0;
-  arrayCart.forEach((e) => {
+  arrayCart.forEach(e => {
     total = total + e.count * priceProduct(e.id, arrayProducts);
   });
   return total;
 }
-function totalCostWithoutDiscount() {
-  //find total cost without discount
+function totalCostWithoutDiscount() { //find total cost without discount
   let total = 0;
   arrayCart.forEach((e) => {
     total = total + e.count * startingPriceProduct(e.id, arrayProducts);
   });
   return total;
 }
-function showItemCard()
-{
-    arrayCart = getItemStorage();
-    itemCart = document.querySelector('#itemCart');
-    arrayCart.forEach(item =>{
-        const prod = arrayProducts[arrayProducts.findIndex(p=>p.id == item.id)];
-        let nSelected = "";
-        for (let i = 1; i <= 10; i++) {
-            i == item.count 
-            ? nSelected += `<option selected value="${i}">${i}</option>`
-            : nSelected += `<option value="${i}">${i}</option>`
-        }
-        itemCart.innerHTML += `
+function showItemCard() {
+  arrayCart = getItemStorage();
+  itemCart = document.querySelector("#itemCart");
+  itemCart.innerHTML = ``;
+  arrayCart.forEach((item) => {
+    const prod = arrayProducts[arrayProducts.findIndex((p) => p.id == item.id)];
+    let nSelected = "";
+    for (let i = 1; i <= 10; i++) {
+      i == item.count
+        ? (nSelected += `<option selected value="${i}">${i}</option>`)
+        : (nSelected += `<option value="${i}">${i}</option>`);
+    }
+    itemCart.innerHTML += `
             <div class="showcase">
                 <a href="#" class="showcase-img-box">
                     <img
@@ -89,13 +83,15 @@ function showItemCard()
                             ${prod.description}
                             </h4>
                         </a>
-                        <a href="#" class="showcase-category">${prod.category}</a>
+                        <a href="#" class="showcase-category">${
+                          prod.category
+                        }</a>
                         <div class="price-box">
                             <p class="price">${prod.currency + prod.price}</p>
                             <del>${prod.startingPrice}</del>
                         </div>                          
                         </div>
-                        <button class="sidebar-close-btn2" data-mobile-menu-close-btn>
+                        <button class="sidebar-close-btn2" id="btnDelete${prod.id}" data-mobile-menu-close-btn>
                         <ion-icon name="close-outline"></ion-icon>
                         </button>
                     </div>                      
@@ -106,20 +102,19 @@ function showItemCard()
                     </div>
                 </div>
             </div>
-        `
-
-    })
+        `;
+  });
 }
 function showDetailCart() {
   arrayCart = getItemStorage();
   const n = countTotalProducts();
   totalSum = totalCost();
-  delieryCost = totalSum >= freeShepping ? 0.00 : 4.99;
+  delieryCost = totalSum >= freeShepping ? 0.0 : 4.99;
   textDelieryCost = delieryCost == 0 ? "FREE" : "$ 4.99";
   total = totalSum + delieryCost;
   totalWithoutdiscount = totalCostWithoutDiscount();
   sale = totalWithoutdiscount - totalSum;
-  
+  orderSumary.innerHTML = ``;
   orderSumary.innerHTML += `
     <h2 class="newsletter-title2">Order sumary</h2>
     <div class="content-item">
@@ -128,7 +123,7 @@ function showDetailCart() {
     </div>
     <div class="content-item">
         <p class="newsletter-desc">Sale:</p>
-        <p class="newsletter-desc">-${sale}</p>
+        <p class="newsletter-desc">-$${sale}</p>
     </div>
     <div class="content-item">
         <p class="newsletter-desc">${n} items</p>
@@ -147,7 +142,8 @@ function showDetailCart() {
     </div>
     <p class="newsletter-desc">(taxes included)</p>
     </p>
-  `
+  `;
+  detailcart.innerHTML = ``;
   detailcart.innerHTML += `
         <h2 class="title2">YOUR CART</h2>
         <p class="newsletter-desc2">TOTAL :(${n} items) $${totalSum}</p>
@@ -159,12 +155,48 @@ function showDetailCart() {
         </div>
     `;
 }
+function createEvents(){
+  arrayCart.forEach(element => {
+    document.querySelector(`#btnDelete${element.id}`).addEventListener('click',() => {
+      let i = arrayCart.findIndex(e => e.id == element.id);
+      if (i >= 0) {
+        arrayCart.splice(arrayCart.findIndex(e => e.id == element.id),1);
+        saveItemStorage(arrayCart);
+        updateTotalCart();
+      }
+    });
+  });
+}
+function updateTotalCart(){
+  updateCountItemsCart(); // update text of cartnumber
+  showDetailCart();
+  showItemCard();
+  createEvents();
+}
 fetch("../../products.json")
   .then((response) => response.json())
   .then((productoss) => {
     arrayProducts = productoss;
-    updateCountItemsCart(); // update text of cartnumber
-    showDetailCart();
-    showItemCard();
+    updateTotalCart();
+    // arrayCart.forEach(element => {
+    //   document.querySelector(`#btnDelete${element.id}`).addEventListener('click',() => {
+    //     console.log(`click en el btn ${element.id}`);
+    //     arrayCart.splice(arrayCart.findIndex(e => e.id == element.id),1);
+    //     saveItemStorage(arrayCart);
+    //     updateTotalCart();
+    //   });
+    // });
   });
 let arrayCart = getItemStorage(); //update arrayCart with localstorage
+window.onload = function(){
+  arrayCart.forEach(element => {
+    document.querySelector(`#btnDelete${element.id}`).addEventListener('click',() => {
+      const j = arrayCart.findIndex(e => e.id == element.id);
+      if (j >= 0) {
+        arrayCart.splice(arrayCart.findIndex(e => e.id == element.id),1);
+        saveItemStorage(arrayCart);
+        updateTotalCart();
+      }
+    });
+  });
+}
