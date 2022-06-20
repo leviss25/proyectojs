@@ -3,6 +3,7 @@ let nro = arrayProducts.length;
 let countitemscart = document.querySelector("#countitemscart");
 let detailcart = document.querySelector("#detailcart");
 let orderSumary = document.querySelector("#orderSumary");
+let btncheckout = document.querySelector("#btncheckout");
 let freeShepping = 100;
 let flag = 0;
 
@@ -196,6 +197,56 @@ fetch("../../products.json")
     // });
   });
 let arrayCart = getItemStorage(); //update arrayCart with localstorage
+btncheckout.addEventListener('click', () => {
+  if (arrayCart.length > 0) {
+    //
+    Swal.fire({
+      title: 'Confirm payment',
+      text: 'Confirm payment and enjoy',
+      icon: 'question',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      stopKeydownPropagation: false,
+      showConfirmButton: true,
+      showCancelButton: true,
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn-newsletter',
+        cancelButton: 'btn-newsletter',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        arrayCart = [];
+        saveItemStorage(arrayCart);
+        updateTotalCart(arrayCart);
+        Swal.fire({
+          title: 'Thanks for shopping!',
+          text: 'It was successfully received. You will receive a confirmation email shortly.',
+          icon: 'success',
+          buttonsStyling: false,
+          confirmButtonText: 'Go Home',
+          customClass: {
+            confirmButton: 'btn-newsletter'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.href = '../../index.html';
+          }
+        })
+      }
+    })
+    //
+  }
+  else{//Don't have items in Cart
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: "Your cart is empty!",
+      footer: '<a href="../../index.html">Go to the home page to start shopping</a>'
+    });
+  }
+})
 window.onload = function(){
   arrayCart.forEach(element => {
     document.querySelector(`#btnDelete${element.id}`).addEventListener('click', () => {
