@@ -3,7 +3,6 @@ let nro = arrayProducts.length;
 let countitemscart = document.querySelector("#countitemscart");
 let detailcart = document.querySelector("#detailcart");
 let orderSumary = document.querySelector("#orderSumary");
-let itemNumbers = document.querySelector("itemNumbers");
 let freeShepping = 100;
 let flag = 0;
 
@@ -96,7 +95,7 @@ function showItemCard() {
                         </button>
                     </div>                      
                     <div>
-                        <select name="n" id="itemNumbers">
+                        <select name="numberIt${prod.id}" id="itemNumbers${prod.id}">
                             ${nSelected}
                         </select>
                     </div>
@@ -165,6 +164,15 @@ function createEvents(){
         updateTotalCart();
       }
     });
+    let itemNumbers = document.querySelector(`#itemNumbers${element.id}`);
+    itemNumbers.addEventListener('change', () => {
+      const newN = parseInt(itemNumbers.value);
+      arrayCart = getItemStorage();
+      const indice = arrayCart.findIndex(e => e.id == element.id);
+      arrayCart[indice].count = newN;
+      saveItemStorage(arrayCart);
+      updateTotalCart(arrayCart);
+    });
   });
 }
 function updateTotalCart(){
@@ -190,13 +198,22 @@ fetch("../../products.json")
 let arrayCart = getItemStorage(); //update arrayCart with localstorage
 window.onload = function(){
   arrayCart.forEach(element => {
-    document.querySelector(`#btnDelete${element.id}`).addEventListener('click',() => {
+    document.querySelector(`#btnDelete${element.id}`).addEventListener('click', () => {
       const j = arrayCart.findIndex(e => e.id == element.id);
       if (j >= 0) {
         arrayCart.splice(arrayCart.findIndex(e => e.id == element.id),1);
         saveItemStorage(arrayCart);
         updateTotalCart();
       }
+    });
+    let itemNumbers = document.querySelector(`#itemNumbers${element.id}`);
+    itemNumbers.addEventListener('change', () => {
+      const newN = parseInt(itemNumbers.value);
+      arrayCart = getItemStorage();
+      const indice = arrayCart.findIndex(e => e.id == element.id);
+      arrayCart[indice].count = newN;
+      saveItemStorage(arrayCart);
+      updateTotalCart();
     });
   });
 }
