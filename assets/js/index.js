@@ -44,6 +44,9 @@ function totalCost(){//find total cost
 function filterItems(array,text){
   return array.filter(element => element.description == text);
 }
+function toFind(array,text){
+  return array.filter(element => element.description.toLowerCase().match(text.toLowerCase()));
+}
 function showProductAdded(id) {
   const prod = arrayProducts[arrayProducts.findIndex(p=>p.id == id)];
   arrayCart=getItemStorage();
@@ -254,6 +257,20 @@ fetch('products.json')
 // });
 let arrayCart = getItemStorage(); //update arrayCart with localstorage
 updateCountItemsCart(); // update text of cartnumber
-inputSearch.addEventListener('change', e =>{
-  e.target.value!="" ? showItems(filterItems(arrayProducts,e.target.value)) : showItems(arrayProducts);
+// inputSearch.addEventListener('change', e =>{
+//   let arrayTemp = filterItems(arrayProducts,e.target.value);
+
+//   if (e.target.value!="") {
+    
+//     showItems(arrayTemp);
+//     addEventsIndex(arrayTemp);
+//   } else {
+//     showItems(arrayProducts);
+//     addEventsIndex(arrayProducts);
+//   }
+// })
+inputSearch.addEventListener('input', e =>{
+  let arrayTemp = toFind(arrayProducts,e.target.value);
+    showItems(arrayTemp);
+    addEventsIndex(arrayTemp);
 })
