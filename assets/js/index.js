@@ -1,6 +1,7 @@
 let arrayProducts =[];
 let countitemscart = document.querySelector("#countitemscart");
 let gridProduct = document.querySelector("#gridproducts");
+let inputSearch = document.querySelector("#inputSearch");
 let freeShepping = 100;
 
 function getItemStorage() {//update the cart with the localStorage information, we create empty arrya if there isn't information
@@ -39,6 +40,9 @@ function totalCost(){//find total cost
     total = total + (e.count * priceProduct(e.id, arrayProducts));
   })
   return total;
+}
+function filterItems(array,text){
+  return array.filter(element => element.description == text);
 }
 function showProductAdded(id) {
   const prod = arrayProducts[arrayProducts.findIndex(p=>p.id == id)];
@@ -104,11 +108,10 @@ function showProductAdded(id) {
     width: '50%'
   })
 }
-fetch('products.json')
-.then(response => response.json())
-.then(productoss =>{
-  arrayProducts = productoss;
-  productoss.forEach(prod =>{
+function showItems(array)
+{
+  gridProduct.innerHTML = ``;
+  array.forEach(prod =>{
     //count the number of stars of each product....
     let htmlStars = "";
     for (let i = 1; i <= 5; i++) {
@@ -165,21 +168,31 @@ fetch('products.json')
         </div>
       `;
   })
-  //to add click event in the buttons to add products to the cart and to the localStorage
-  arrayProducts.forEach(productArray => {
+}
+function addEventsIndex(array){
+  array.forEach(productArray => {
     document.querySelector(`#btnAdd${productArray.id}`).addEventListener("click", () => {
       if (isInCart(productArray.id)) {
         updatecount(productArray.id);
       } else {
-        let {id} = arrayProducts.find(productito => productito.id == productArray.id);
+        let {id} = array.find(productito => productito.id == productArray.id);
         arrayCart.push({id, count: 1 });
-        // arrayCart.push({ ...arrayProducts.find(productito => productito.id == productArray.id), count: 1 });
+        // arrayCart.push({ ...array.find(productito => productito.id == productArray.id), count: 1 });
         saveItemStorage(arrayCart);
       }
       updateCountItemsCart();
       showProductAdded(productArray.id);
     });
   });
+}
+fetch('products.json')
+.then(response => response.json())
+.then(productoss =>{
+  arrayProducts = productoss;
+  //Show products
+  showItems(arrayProducts);
+  //to add click event in the buttons to add products to the cart and to the localStorage
+  addEventsIndex(arrayProducts);
 })
 // // to go through the arrayProducts and create a card for each product
 // arrayProducts.forEach((prod) => {
@@ -241,3 +254,6 @@ fetch('products.json')
 // });
 let arrayCart = getItemStorage(); //update arrayCart with localstorage
 updateCountItemsCart(); // update text of cartnumber
+inputSearch.addEventListener('change', e =>{
+  e.target.value!="" ? showItems(filterItems(arrayProducts,e.target.value)) : showItems(arrayProducts);
+})

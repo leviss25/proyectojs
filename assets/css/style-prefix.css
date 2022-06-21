@@ -504,6 +504,8 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
 .header-main {
   padding: 20px 0;
   border-bottom: 1px solid var(--cultured);
+  /* position: fixed; */
+  /* top: 0px; */
 }
 
 .header-logo { margin-bottom: 20px; }

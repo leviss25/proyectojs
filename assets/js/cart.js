@@ -95,7 +95,7 @@ function showItemCard() {
                         <ion-icon name="close-outline"></ion-icon>
                         </button>
                     </div>                      
-                    <div>
+                    <div class="header-top-actions">
                         <select name="numberIt${prod.id}" id="itemNumbers${prod.id}">
                             ${nSelected}
                         </select>
